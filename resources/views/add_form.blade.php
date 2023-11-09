@@ -2,6 +2,8 @@
 
 @section('content')
     <h2>Add User</h2>
+    <br />
+    <hr />
     @if(session('success'))
         <div class="alert alert-success">
             {{ session('success') }}
@@ -36,7 +38,13 @@
         </div>
         <div class="mb-3">
             <label for="role" class="form-label">Role</label>
-            <input type="text" class="form-control" id="role" name="role" required>
+            <!-- <input type="text" class="form-control" id="role" name="role" required> -->
+            <select name="role" class="form-control" id="role" required>
+                <option values="">Select Role </option>
+                <option values="Admin">Admin </option>
+                <option values="User">User </option>
+
+            </Select>
         </div>
 
         <button type="submit" class="btn btn-primary">Add User</button>

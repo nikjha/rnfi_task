@@ -2,6 +2,8 @@
 
 @section('content')
     <h2>Edit User</h2>
+        <br />
+         <hr />
     @if(session('success'))
         <div class="alert alert-success">
             {{ session('success') }}
@@ -36,8 +38,13 @@
         </div>
         <div class="mb-3">
             <label for="role" class="form-label">Role</label>
-            <input type="text" class="form-control" id="role" name="role" value="{{ $user['role'] }}" required>
+            <select name="role" class="form-control" id="role" required>
+                <option value="">Select Role</option>
+                <option value="Admin" {{ $user['role'] === 'Admin' ? 'selected' : '' }}>Admin</option>
+                <option value="User" {{ $user['role'] === 'User' ? 'selected' : '' }}>User</option>
+            </select>
         </div>
+
 
         <button type="submit" class="btn btn-primary">Update User</button>
     </form>

@@ -18,6 +18,7 @@ use App\Http\Controllers\SlotController;
 //     return view('welcome');
 // });
 Route::get('/', [UserController::class, 'index']);
+Route::get('/index', [UserController::class, 'index']);
 Route::get('/add', [UserController::class, 'showForm']);
 Route::post('/add', [UserController::class, 'addData']);
 Route::get('/edit/{id}', [UserController::class, 'editForm']);

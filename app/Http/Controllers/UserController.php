@@ -10,12 +10,10 @@ class UserController extends Controller
 {
     public function index()
     {
-        // Retrieve data from session
         $users = Session::get('userData', []);
         if (empty($users)) {
-            $users = User::all(); // Retrieve all users from the database
+            $users = User::all(); 
         }
-        // Pass data to the view
         return view('index', compact('users'));
     }
 
@@ -26,17 +24,18 @@ class UserController extends Controller
 
     public function addData(Request $request)
     {
-        $data = $request->except('image'); // Exclude the 'image' field from the request
-        $data['id'] = uniqid(); // Generate unique ID for the record
+        $data = $request->except('image'); 
+        $data['id'] = uniqid(); // Generating unique ID for the record
 
-        // Handle file upload separately
+        // Handling file upload separately
         if ($request->hasFile('image')) {
-            // $imagePath = $request->file('image')->store('images'); // Store the image and get its path
-            $imagePath = $request->file('image')->store('images', 'public'); // Store the image in the public disk
-            $data['image'] = $imagePath;
+        $imageName = time().'.'.$request->image->extension();
+        $request->image->move(public_path('images'), $imageName);
+        $data['image'] = $imageName;
+
         }
 
-        // Add data to session array
+        // Adding data to session array
         $userData = Session::get('userData', []);
         $userData[] = $data;
         Session::put('userData', $userData);
@@ -48,7 +47,6 @@ class UserController extends Controller
 
     public function editForm($id)
     {
-        // Retrieve data from session based on $id
         $userData = Session::get('userData', []);
         $user = collect($userData)->firstWhere('id', $id);
         if(!$user){
@@ -61,20 +59,21 @@ class UserController extends Controller
 
     public function updateData(Request $request, $id)
     {
-        // Update data in session based on $id
         $userData = Session::get('userData', []);
         $userIndex = collect($userData)->search(function ($user) use ($id) {
             return $user['id'] == $id;
         });
+        $request->validate([
+            'image' => 'required|image|mimes:png,jpg,jpeg|max:2048'
+        ]);
 
         if ($userIndex !== false) {
             $data = $request->except('image');
             
-            // Handle file upload separately
             if ($request->hasFile('image')) {
-                // $imagePath = $request->file('image')->store('images');
-                $imagePath = $request->file('image')->store('images', 'public'); // Store the image in the public disk
-                $data['image'] = $imagePath;
+                $imageName = time().'.'.$request->image->extension();
+                $request->image->move(public_path('images'), $imageName);
+                $data['image'] = $imageName;
             }
 
             $userData[$userIndex] = $data;
@@ -89,14 +88,13 @@ class UserController extends Controller
 
     public function deleteData($id)
     {
-        // Delete data from session based on $id
         $userData = Session::get('userData', []);
         $userData = collect($userData)->reject(function ($user) use ($id) {
             return $user['id'] == $id;
         })->values()->all();
         
         if(!$userData){
-                        // Delete user from the database
+                        
             User::where('id', $id)->delete();
         }
         else{
@@ -109,10 +107,10 @@ class UserController extends Controller
 
     public function finalSubmit()
     {
-        // Get data from session
+        // Geting data from session
         $userData = Session::get('userData', []);
 
-        // Save data to the database
+        // Saving data to the database
         foreach ($userData as $user) {
             User::create($user);
         }

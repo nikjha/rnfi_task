@@ -2,6 +2,8 @@
 
 @section('content')
     <h2>Users</h2>
+        <br />
+    <hr />
     @if(session('success'))
         <div class="alert alert-success">
             {{ session('success') }}
@@ -32,8 +34,8 @@
                     <td>{{ $user['role'] }}</td>
                     <td>
                         @if(isset($user['image']))
-                            <img src="{{ asset($user['image']) }}" alt="User Image" style="max-width: 100px;">
-                        @elsemt-3
+                            <img src="{{ asset('images/'.$user['image']) }}" alt="User Image" style="max-width: 100px;">
+                        @else
                             No Image
                         @endif
                     </td>
